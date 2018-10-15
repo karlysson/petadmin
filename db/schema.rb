@@ -10,10 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181015203943) do
+ActiveRecord::Schema.define(version: 20181015205232) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "campaigns", force: :cascade do |t|
+    t.string   "title"
+    t.text     "body"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "clients", force: :cascade do |t|
     t.string   "name"
@@ -22,6 +29,13 @@ ActiveRecord::Schema.define(version: 20181015203943) do
     t.string   "phone"
     t.datetime "created_at",   null: false
     t.datetime "updated_at",   null: false
+  end
+
+  create_table "discounts", force: :cascade do |t|
+    t.string   "title"
+    t.decimal  "value"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "fae_changes", force: :cascade do |t|
@@ -172,4 +186,49 @@ ActiveRecord::Schema.define(version: 20181015203943) do
     t.index ["unlock_token"], name: "index_fae_users_on_unlock_token", unique: true, using: :btree
   end
 
+  create_table "products", force: :cascade do |t|
+    t.string   "title"
+    t.string   "description"
+    t.decimal  "price"
+    t.text     "observations"
+    t.integer  "supplier_id"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+    t.index ["supplier_id"], name: "index_products_on_supplier_id", using: :btree
+  end
+
+  create_table "sells", force: :cascade do |t|
+    t.decimal  "total"
+    t.integer  "discount_id"
+    t.integer  "client_id"
+    t.text     "observations"
+    t.integer  "status"
+    t.date     "date"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+    t.index ["client_id"], name: "index_sells_on_client_id", using: :btree
+    t.index ["discount_id"], name: "index_sells_on_discount_id", using: :btree
+  end
+
+  create_table "services", force: :cascade do |t|
+    t.string   "title"
+    t.text     "description"
+    t.integer  "price"
+    t.text     "observations"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+  end
+
+  create_table "suppliers", force: :cascade do |t|
+    t.string   "name"
+    t.text     "observations"
+    t.string   "email"
+    t.string   "phone"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+  end
+
+  add_foreign_key "products", "suppliers"
+  add_foreign_key "sells", "clients"
+  add_foreign_key "sells", "discounts"
 end
