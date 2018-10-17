@@ -48,10 +48,10 @@ Here are the technologies used in this project.
 * To build the containers:
 >    $ sudo docker-compose build
 
-* To create the bank and do as migrations:
+* To create the database and run the migrations:
 >    $ sudo docker-compose run --rm website bundle exec rake db:create db:migrate
 
-* To install as gens:
+* To install all the gems:
 >    $ sudo docker-compose run --rm website bundle install
 
 * To run the project:
