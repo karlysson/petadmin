@@ -10,10 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181015205232) do
+ActiveRecord::Schema.define(version: 20181018195858) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "campaign_clients", force: :cascade do |t|
+    t.integer  "campaign_id"
+    t.integer  "client_id"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+    t.index ["campaign_id"], name: "index_campaign_clients_on_campaign_id", using: :btree
+    t.index ["client_id"], name: "index_campaign_clients_on_client_id", using: :btree
+  end
 
   create_table "campaigns", force: :cascade do |t|
     t.string   "title"
@@ -197,6 +206,24 @@ ActiveRecord::Schema.define(version: 20181015205232) do
     t.index ["supplier_id"], name: "index_products_on_supplier_id", using: :btree
   end
 
+  create_table "sell_products", force: :cascade do |t|
+    t.integer  "product_id"
+    t.integer  "sell_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["product_id"], name: "index_sell_products_on_product_id", using: :btree
+    t.index ["sell_id"], name: "index_sell_products_on_sell_id", using: :btree
+  end
+
+  create_table "sell_services", force: :cascade do |t|
+    t.integer  "service_id"
+    t.integer  "sell_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["sell_id"], name: "index_sell_services_on_sell_id", using: :btree
+    t.index ["service_id"], name: "index_sell_services_on_service_id", using: :btree
+  end
+
   create_table "sells", force: :cascade do |t|
     t.decimal  "total"
     t.integer  "discount_id"
@@ -208,6 +235,15 @@ ActiveRecord::Schema.define(version: 20181015205232) do
     t.datetime "updated_at",   null: false
     t.index ["client_id"], name: "index_sells_on_client_id", using: :btree
     t.index ["discount_id"], name: "index_sells_on_discount_id", using: :btree
+  end
+
+  create_table "service_sells", force: :cascade do |t|
+    t.integer  "service_id"
+    t.integer  "sell_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["sell_id"], name: "index_service_sells_on_sell_id", using: :btree
+    t.index ["service_id"], name: "index_service_sells_on_service_id", using: :btree
   end
 
   create_table "services", force: :cascade do |t|
@@ -228,7 +264,15 @@ ActiveRecord::Schema.define(version: 20181015205232) do
     t.datetime "updated_at",   null: false
   end
 
+  add_foreign_key "campaign_clients", "campaigns"
+  add_foreign_key "campaign_clients", "clients"
   add_foreign_key "products", "suppliers"
+  add_foreign_key "sell_products", "products"
+  add_foreign_key "sell_products", "sells"
+  add_foreign_key "sell_services", "sells"
+  add_foreign_key "sell_services", "services"
   add_foreign_key "sells", "clients"
   add_foreign_key "sells", "discounts"
+  add_foreign_key "service_sells", "sells"
+  add_foreign_key "service_sells", "services"
 end
